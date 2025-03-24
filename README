@@ -1,69 +1,76 @@
-Linha 
-Inicio é Declarado a Matriz do Jogo
+Linha 4
+Tamanho do tabuleiro (3x3)
 
-Linha 23
-Funcao que vai ser utilizada para um numero
-aleatorio ser gerado e a cada vez não ser repetido,
-sempre é executado no comeco do programa
+Linha 6
+Tabuleiro do jogo
+Para armazenar as coordenadas de cada jogada no jogo
+Contador para controlar o número de jogadas
 
-Linha 53
-Programa vai gerar 2 numeros aleatorios de coordenadas e
-vai conferir se o ponto no tabuleiro está livre para ser jogado.
-Se estiver livre, ele vai criar um "backup" da matriz original
-e vai comecar a jogar a partir dela.
+Linha 10
+Funcao para inicializar o tabuleiro com espaços vazios
 
-Linha 69
-Este primeiro trecho de codigo, o computador cria uma nova matriz.
-Aqui, ele marca O num ponto qualquer e depois verifica se ele ganhou o jogo
+Linha 14
+Preenche com espaços vazios
 
-Linha 79
-Caso o computador não possa marcar zero neste ponto, ele
-fará o teste para ver se o jogador pode ganhar o jogo. 
-Caso ele consiga vencer o jogo, o computador
-marca esta posição para evitar a vitória adversária.
+Linha 19
+Funcao para mostrar o tabuleiro na tela
 
-Linha 97
-Restaura Matriz
+Linha 33
+Funcao para verificar se há um vencedor
 
-Linha 112
-Função que verifica se há vencedor
+Linha 35
+Verificar linhas
 
-Linha 118
-Caso a diagonal esteja vencid
+Linha 41
+Verificar colunas
 
-Linha 126
-Verifica Linhas e Coluna
+Linha 47
+Verificar diagonais
 
-Linha 140
-Verifica Diagonal Inversa
+Linha 54
+Nenhum vencedor
 
-Linha 153
-Função que pede as coordenadas ao jogador
+Linha 57
+Funcao para registrar a jogada de um jogador
 
-Linha 162
-Função para limpar a tela
+Linha 65
+Funcao para verificar se o tabuleiro está cheio (empate)
 
-Linha 169
-Esta função recebe a coordenada X. Faz a verificacao e marca o X no tabuleiro
+Linha 70
+Funcao para fazer o replay de uma partida passada
 
-Linha 192
-Essa funcao tem a funcao de gerar o grafico da matriz na tela
+Linha 77
+Reverte o tabuleiro para o estado da jogada
 
-Linha 205
-Inicia a Matriz
+Linha 81
+Aguarda o jogador pressionar Enter
 
-Linha 219
-Coloca semente randomica no sistem
+Linha 85
+Funcao principal
 
-Linha 222
-Zera o numero de jogada
+Linha 91
+Inicializa o tabuleiro
 
-Linha 228
-Verifica se não houve vitórias ou se acabaram
-ou se acabaram o numero de jogadas.
-Caso contrário, o computador joga e numero de jogadas
-Aumenta um
+Linha 94
+Loop do jogo
 
-Linha 233
-Repere a verificação
-Imprime matriz final na tela
+Linha 98
+Alterna entre os jogadores 'X' e 'O'
+
+Linha 105
+Verifica se a posição e valida
+
+Linha 111
+Registra a jogada
+
+Linha 114
+Verifica se ha um vencedor
+
+Linha 119 e 123
+Finaliza o jogo
+
+Linha 127
+Pergunta se o jogador quer ver o replay
+
+Linha 130
+Limpa o buffer do scanf
