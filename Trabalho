@@ -1,0 +1,236 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+
+
+#define Lado 3
+
+/*Inicio é Declarado a Matriz do Jogo*/
+char matriz[3][3];
+char matriza[3][3];
+char matrizb[3][3];
+char vitoria;
+
+void init_matriz();
+void imprime_matriz();
+int  jogador_joga(int a, int b);
+void clrscr(void);
+void pega_valores(void);
+int checar(void);
+int pc_joga();
+void gera_rand();
+
+/*Funcao que vai ser utilizada para um numero
+aleatorio ser gerado e a cada vez não ser repetido,
+sempre é executado no comeco do programa*/
+void gera_rand()
+{
+  int stime;
+  int ltime;
+
+  ltime=time(NULL);
+  stime=(unsigned) ltime/2;
+  srand(stime);
+
+}
+
+int pc_joga()
+{
+  int x,y,mx,my;
+  int j,i;
+  int erro=0;
+
+  x=(rand()%3);
+  y=(rand()%3);
+
+  if(matriz[x][y]!=' ')
+    {
+      pc_joga();
+      return(1);
+    }
+  else
+    {
+      /*Programa vai gerar 2 numeros aleatorios de coordenadas e
+      vai conferir se o ponto no tabuleiro está livre para ser jogado.
+      Se estiver livre, ele vai criar um "backup" da matriz original
+      e vai comecar a jogar a partir dela.*/
+      for(i=0;i<3;i++)
+   for(j=0;j<3;j++)
+     matriza[i][j]=matriz[i][j];
+
+
+      for(i=0;i<3;i++)
+   for(j=0;j<3;j++)
+     {
+       if (matriz[i][j]==' ')
+         {
+      /*
+      
+      /*Este primeiro trecho de codigo, o computador cria uma nova matriz.
+      Aqui, ele marca O num ponto qualquer e depois verifica se ele ganhou o jogo*/
+      matriz[i][j]='O';
+      if((checar()!=0))
+        {
+          mx=i;
+          my=j;
+          erro=2;
+         }
+      else
+        {/*Caso o computador não possa marcar zero neste ponto, ele
+          fará o teste para ver se o jogador pode ganhar o jogo. 
+          Caso ele consiga vencer o jogo, o computador
+          marca esta posição para evitar a vitória adversária.*/
+          matriz[i][j]='X';
+          if((checar()!=0)&&(erro!=2))
+            {
+         mx=i;
+         my=j;
+         erro=1;
+            }
+
+        }
+
+         matriz[i][j]=' ';
+              }
+     }
+
+      //Restaura Matriz 
+      for(i=0;i<3;i++)
+   for(j=0;j<3;j++)
+     matriz[i][j]=matriza[i][j];
+      
+      if (erro==0)
+    matriz[x][y]='O';
+      if (erro!=0)
+   matriz[mx][my]='O';
+    }
+}
+
+
+
+
+/*Função que verifica se há vencedor*/
+int checar()
+{
+  int erro=0;
+
+  int i;
+  //Caso a diagonal esteja vencida
+  if ((matriz[0][0]==matriz[1][1])&&(matriz[1][1]==matriz[2][2])&&(matriz[0][0]!=' '))
+   {
+     erro=1;
+     vitoria=matriz[0][0];
+   }
+  
+
+  //Verifica Linhas e Colunas
+  for(i=0;i<Lado;i++)
+    {
+      if ((matriz[i][0]==matriz[i][1])&&(matriz[i][1]==matriz[i][2])&&(matriz[i][0]!=' '))
+   {
+     erro=1;
+     vitoria=matriz[i][0];
+   }
+      if ((matriz[0][i]==matriz[1][i])&&(matriz[1][i]==matriz[2][i])&&(matriz[0][i]!=' '))
+   {
+     erro=1;
+     vitoria=matriz[0][i];
+   }
+    }
+  //Verifica Diagonal Inversa
+  if ((matriz[2][0]==matriz[1][1])&&(matriz[1][1]==matriz[0][2])&&(matriz[2][0]!=' '))
+   {
+     erro=1;
+     vitoria=matriz[2][0];
+   }
+
+
+  return(erro);
+}
+
+
+
+/*Função que pede as coordenadas ao jogador*/
+void pega_valores(void)
+{
+  int x,y;
+  printf("\n\nDigite as coordenadas do tipo: Linha, Coluna");
+  scanf("%d%d",&x,&y);
+  jogador_joga(x,y);
+}
+
+/*Função para limpar a tela*/
+void clrscr(void)
+{
+  system("clear");
+}
+
+
+/*Esta função recebe a coordenada X. Faz a verificacao e marca o X no tabuleiro*/
+int jogador_joga(int a, int b)
+{
+  clrscr();
+  if((a>Lado)||(b>Lado)||(a<1)||(b<1))
+    {
+      printf("Valores Inválidos %d,%d\n\n",a,b);
+      imprime_matriz();
+      
+      pega_valores();
+    }
+  else if(matriz[a-1][b-1]!=' ')
+    {
+      printf("Casa já foi preenchida %d,%d \n\n",a,b);
+      imprime_matriz();
+      pega_valores();
+    }
+  else
+    matriz[a-1][b-1]='X';
+
+}
+
+
+/*Essa funcao tem a funcao de gerar o grafico da matriz na tela*/
+void imprime_matriz()
+{
+  int i;
+  printf("\n\n");
+  for(i=0;i<Lado;i++)
+    {
+      printf(" %c | %c | %c\n",matriz[i][0],matriz[i][1],matriz[i][2]);
+      if(i<Lado-1)
+   printf("------------\n");
+    }
+}
+
+/*Inicia a Matriz*/
+void init_matriz()
+{
+  int k,j;
+  for (k=0;k < Lado;k++)
+    for(j=0;j < Lado;j++)
+      matriz[k][j]=' ';
+}
+
+
+int main(void)
+{
+  
+  int jogadas;
+  gera_rand();                       // Coloca semente randomica no sistema
+
+  init_matriz();
+  jogadas = 0;                       //Zera o numero de jogadas.
+  do
+    {
+      imprime_matriz();
+      pega_valores();
+      jogadas++;
+      if((checar()==0)&&(jogadas<9)) // Verifica se não houve vitórias ou se acabaram
+   {                            // ou se acabaram o numero de jogadas.
+     pc_joga();                 // Caso contrário, o computador joga e numero de jogadas
+     jogadas++;                 // Aumenta um
+   }
+    }while((checar()==0)&&(jogadas<9)); //Repere a verificação
+  imprime_matriz();                   // Imprime matriz final na tela
+  return(0);
+}
