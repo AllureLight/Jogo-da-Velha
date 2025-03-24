@@ -1,0 +1,69 @@
+Linha 
+Inicio é Declarado a Matriz do Jogo
+
+Linha 23
+Funcao que vai ser utilizada para um numero
+aleatorio ser gerado e a cada vez não ser repetido,
+sempre é executado no comeco do programa
+
+Linha 53
+Programa vai gerar 2 numeros aleatorios de coordenadas e
+vai conferir se o ponto no tabuleiro está livre para ser jogado.
+Se estiver livre, ele vai criar um "backup" da matriz original
+e vai comecar a jogar a partir dela.
+
+Linha 69
+Este primeiro trecho de codigo, o computador cria uma nova matriz.
+Aqui, ele marca O num ponto qualquer e depois verifica se ele ganhou o jogo
+
+Linha 79
+Caso o computador não possa marcar zero neste ponto, ele
+fará o teste para ver se o jogador pode ganhar o jogo. 
+Caso ele consiga vencer o jogo, o computador
+marca esta posição para evitar a vitória adversária.
+
+Linha 97
+Restaura Matriz
+
+Linha 112
+Função que verifica se há vencedor
+
+Linha 118
+Caso a diagonal esteja vencid
+
+Linha 126
+Verifica Linhas e Coluna
+
+Linha 140
+Verifica Diagonal Inversa
+
+Linha 153
+Função que pede as coordenadas ao jogador
+
+Linha 162
+Função para limpar a tela
+
+Linha 169
+Esta função recebe a coordenada X. Faz a verificacao e marca o X no tabuleiro
+
+Linha 192
+Essa funcao tem a funcao de gerar o grafico da matriz na tela
+
+Linha 205
+Inicia a Matriz
+
+Linha 219
+Coloca semente randomica no sistem
+
+Linha 222
+Zera o numero de jogada
+
+Linha 228
+Verifica se não houve vitórias ou se acabaram
+ou se acabaram o numero de jogadas.
+Caso contrário, o computador joga e numero de jogadas
+Aumenta um
+
+Linha 233
+Repere a verificação
+Imprime matriz final na tela
