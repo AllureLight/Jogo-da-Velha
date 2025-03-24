@@ -1,236 +1,137 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <time.h>
 
+#define TAM 3 // Tamanho do tabuleiro (3x3)
 
-#define Lado 3
+char tabuleiro[TAM][TAM];  // Tabuleiro do jogo
+int jogadas[9][2];  // Para armazenar as coordenadas de cada jogada no jogo
+int contador_jogadas = 0;  // Contador para controlar o número de jogadas
 
-/*Inicio é Declarado a Matriz do Jogo*/
-char matriz[3][3];
-char matriza[3][3];
-char matrizb[3][3];
-char vitoria;
-
-void init_matriz();
-void imprime_matriz();
-int  jogador_joga(int a, int b);
-void clrscr(void);
-void pega_valores(void);
-int checar(void);
-int pc_joga();
-void gera_rand();
-
-/*Funcao que vai ser utilizada para um numero
-aleatorio ser gerado e a cada vez não ser repetido,
-sempre é executado no comeco do programa*/
-void gera_rand()
-{
-  int stime;
-  int ltime;
-
-  ltime=time(NULL);
-  stime=(unsigned) ltime/2;
-  srand(stime);
-
+// Funcao para inicializar o tabuleiro com espaços vazios
+void inicializarTabuleiro() {
+    for (int i = 0; i < TAM; i++) {
+        for (int j = 0; j < TAM; j++) {
+            tabuleiro[i][j] = ' '; // Preenche com espaços vazios
+        }
+    }
 }
 
-int pc_joga()
-{
-  int x,y,mx,my;
-  int j,i;
-  int erro=0;
-
-  x=(rand()%3);
-  y=(rand()%3);
-
-  if(matriz[x][y]!=' ')
-    {
-      pc_joga();
-      return(1);
+// Funcao para mostrar o tabuleiro na tela
+void exibirTabuleiro() {
+    printf("\nTabuleiro do Jogo da Velha:\n");
+    for (int i = 0; i < TAM; i++) {
+        for (int j = 0; j < TAM; j++) {
+            printf(" %c ", tabuleiro[i][j]);
+            if (j < TAM - 1) printf("|");
+        }
+        printf("\n");
+        if (i < TAM - 1) printf("---|---|---\n");
     }
-  else
-    {
-      /*Programa vai gerar 2 numeros aleatorios de coordenadas e
-      vai conferir se o ponto no tabuleiro está livre para ser jogado.
-      Se estiver livre, ele vai criar um "backup" da matriz original
-      e vai comecar a jogar a partir dela.*/
-      for(i=0;i<3;i++)
-   for(j=0;j<3;j++)
-     matriza[i][j]=matriz[i][j];
+    printf("\n");
+}
 
+// Funcao para verificar se há um vencedor
+char verificarVencedor() {
+    // Verificar linhas
+    for (int i = 0; i < TAM; i++) {
+        if (tabuleiro[i][0] == tabuleiro[i][1] && tabuleiro[i][1] == tabuleiro[i][2] && tabuleiro[i][0] != ' ') {
+            return tabuleiro[i][0];
+        }
+    }
+    // Verificar colunas
+    for (int j = 0; j < TAM; j++) {
+        if (tabuleiro[0][j] == tabuleiro[1][j] && tabuleiro[1][j] == tabuleiro[2][j] && tabuleiro[0][j] != ' ') {
+            return tabuleiro[0][j];
+        }
+    }
+    // Verificar diagonais
+    if (tabuleiro[0][0] == tabuleiro[1][1] && tabuleiro[1][1] == tabuleiro[2][2] && tabuleiro[0][0] != ' ') {
+        return tabuleiro[0][0];
+    }
+    if (tabuleiro[0][2] == tabuleiro[1][1] && tabuleiro[1][1] == tabuleiro[2][0] && tabuleiro[0][2] != ' ') {
+        return tabuleiro[0][2];
+    }
+    return ' ';  // Nenhum vencedor
+}
 
-      for(i=0;i<3;i++)
-   for(j=0;j<3;j++)
-     {
-       if (matriz[i][j]==' ')
-         {
-      /*
-      
-      /*Este primeiro trecho de codigo, o computador cria uma nova matriz.
-      Aqui, ele marca O num ponto qualquer e depois verifica se ele ganhou o jogo*/
-      matriz[i][j]='O';
-      if((checar()!=0))
-        {
-          mx=i;
-          my=j;
-          erro=2;
-         }
-      else
-        {/*Caso o computador não possa marcar zero neste ponto, ele
-          fará o teste para ver se o jogador pode ganhar o jogo. 
-          Caso ele consiga vencer o jogo, o computador
-          marca esta posição para evitar a vitória adversária.*/
-          matriz[i][j]='X';
-          if((checar()!=0)&&(erro!=2))
-            {
-         mx=i;
-         my=j;
-         erro=1;
-            }
+// Funcao para registrar a jogada de um jogador
+void registrarJogada(int linha, int coluna, char jogador) {
+    tabuleiro[linha][coluna] = jogador;
+    jogadas[contador_jogadas][0] = linha;
+    jogadas[contador_jogadas][1] = coluna;
+    contador_jogadas++;
+}
 
+// Funcao para verificar se o tabuleiro está cheio (empate)
+int tabuleiroCheio() {
+    return contador_jogadas == 9;
+}
+
+// Funcao para fazer o replay de uma partida passada
+void replay() {
+    printf("\nReplay da Partida:\n");
+    for (int i = 0; i < contador_jogadas; i++) {
+        int linha = jogadas[i][0];
+        int coluna = jogadas[i][1];
+        char jogador = (i % 2 == 0) ? 'X' : 'O';
+        tabuleiro[linha][coluna] = jogador;  // Reverte o tabuleiro para o estado da jogada
+        exibirTabuleiro();
+        printf("Jogada %d: Jogador %c fez a jogada na linha %d, coluna %d\n", i + 1, jogador, linha + 1, coluna + 1);
+        printf("\nPressione enter para continuar...");
+        getchar();  // Aguarda o jogador pressionar Enter
+    }
+}
+
+// Funcao principal
+int main() {
+    int linha, coluna;
+    char vencedor = ' ';
+    int jogando = 1;
+
+    // Inicializa o tabuleiro
+    inicializarTabuleiro();
+
+    // Loop do jogo
+    while (jogando) {
+        exibirTabuleiro();
+
+        // Alterna entre os jogadores 'X' e 'O'
+        char jogadorAtual = (contador_jogadas % 2 == 0) ? 'X' : 'O';
+        printf("Jogador %c, insira a linha (1-3) e coluna (1-3) da sua jogada: ", jogadorAtual);
+        scanf("%d %d", &linha, &coluna);
+        linha--;  // Ajuste para indice de 0 a 2
+        coluna--;
+
+        // Verifica se a posição e valida
+        if (linha < 0 || linha >= TAM || coluna < 0 || coluna >= TAM || tabuleiro[linha][coluna] != ' ') {
+            printf("Jogada invalida! Tente novamente.\n");
+            continue;
         }
 
-         matriz[i][j]=' ';
-              }
-     }
+        // Registra a jogada
+        registrarJogada(linha, coluna, jogadorAtual);
 
-      //Restaura Matriz 
-      for(i=0;i<3;i++)
-   for(j=0;j<3;j++)
-     matriz[i][j]=matriza[i][j];
-      
-      if (erro==0)
-    matriz[x][y]='O';
-      if (erro!=0)
-   matriz[mx][my]='O';
+        // Verifica se ha um vencedor
+        vencedor = verificarVencedor();
+        if (vencedor != ' ') {
+            exibirTabuleiro();
+            printf("Jogador %c venceu!\n", vencedor);
+            jogando = 0;  // Finaliza o jogo
+        } else if (tabuleiroCheio()) {
+            exibirTabuleiro();
+            printf("Empate! O tabuleiro esta cheio.\n");
+            jogando = 0;  // Finaliza o jogo
+        }
     }
-}
 
-
-
-
-/*Função que verifica se há vencedor*/
-int checar()
-{
-  int erro=0;
-
-  int i;
-  //Caso a diagonal esteja vencida
-  if ((matriz[0][0]==matriz[1][1])&&(matriz[1][1]==matriz[2][2])&&(matriz[0][0]!=' '))
-   {
-     erro=1;
-     vitoria=matriz[0][0];
-   }
-  
-
-  //Verifica Linhas e Colunas
-  for(i=0;i<Lado;i++)
-    {
-      if ((matriz[i][0]==matriz[i][1])&&(matriz[i][1]==matriz[i][2])&&(matriz[i][0]!=' '))
-   {
-     erro=1;
-     vitoria=matriz[i][0];
-   }
-      if ((matriz[0][i]==matriz[1][i])&&(matriz[1][i]==matriz[2][i])&&(matriz[0][i]!=' '))
-   {
-     erro=1;
-     vitoria=matriz[0][i];
-   }
+    // Pergunta se o jogador quer ver o replay
+    char opcao;
+    printf("Voce gostaria de ver o replay da partida? (s/n): ");
+    getchar();  // Limpa o buffer do scanf
+    scanf("%c", &opcao);
+    if (opcao == 's' || opcao == 'S') {
+        replay();
     }
-  //Verifica Diagonal Inversa
-  if ((matriz[2][0]==matriz[1][1])&&(matriz[1][1]==matriz[0][2])&&(matriz[2][0]!=' '))
-   {
-     erro=1;
-     vitoria=matriz[2][0];
-   }
 
-
-  return(erro);
-}
-
-
-
-/*Função que pede as coordenadas ao jogador*/
-void pega_valores(void)
-{
-  int x,y;
-  printf("\n\nDigite as coordenadas do tipo: Linha, Coluna");
-  scanf("%d%d",&x,&y);
-  jogador_joga(x,y);
-}
-
-/*Função para limpar a tela*/
-void clrscr(void)
-{
-  system("clear");
-}
-
-
-/*Esta função recebe a coordenada X. Faz a verificacao e marca o X no tabuleiro*/
-int jogador_joga(int a, int b)
-{
-  clrscr();
-  if((a>Lado)||(b>Lado)||(a<1)||(b<1))
-    {
-      printf("Valores Inválidos %d,%d\n\n",a,b);
-      imprime_matriz();
-      
-      pega_valores();
-    }
-  else if(matriz[a-1][b-1]!=' ')
-    {
-      printf("Casa já foi preenchida %d,%d \n\n",a,b);
-      imprime_matriz();
-      pega_valores();
-    }
-  else
-    matriz[a-1][b-1]='X';
-
-}
-
-
-/*Essa funcao tem a funcao de gerar o grafico da matriz na tela*/
-void imprime_matriz()
-{
-  int i;
-  printf("\n\n");
-  for(i=0;i<Lado;i++)
-    {
-      printf(" %c | %c | %c\n",matriz[i][0],matriz[i][1],matriz[i][2]);
-      if(i<Lado-1)
-   printf("------------\n");
-    }
-}
-
-/*Inicia a Matriz*/
-void init_matriz()
-{
-  int k,j;
-  for (k=0;k < Lado;k++)
-    for(j=0;j < Lado;j++)
-      matriz[k][j]=' ';
-}
-
-
-int main(void)
-{
-  
-  int jogadas;
-  gera_rand();                       // Coloca semente randomica no sistema
-
-  init_matriz();
-  jogadas = 0;                       //Zera o numero de jogadas.
-  do
-    {
-      imprime_matriz();
-      pega_valores();
-      jogadas++;
-      if((checar()==0)&&(jogadas<9)) // Verifica se não houve vitórias ou se acabaram
-   {                            // ou se acabaram o numero de jogadas.
-     pc_joga();                 // Caso contrário, o computador joga e numero de jogadas
-     jogadas++;                 // Aumenta um
-   }
-    }while((checar()==0)&&(jogadas<9)); //Repere a verificação
-  imprime_matriz();                   // Imprime matriz final na tela
-  return(0);
+    return 0;
 }
